@@ -1,0 +1,11 @@
+services:
+  - type: web
+    name: react-vite-app
+    env: static
+    staticPublishPath: /dist
+    buildCommand: npm install && npm run build
+    publishPath: /dist
+
+    envVars:
+      - key: NODE_VERSION
+        value: 16
