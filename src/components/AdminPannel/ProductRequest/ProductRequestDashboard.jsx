@@ -37,8 +37,8 @@ const ProductRequestDashboard = () => {
   return (
     <div className="container mx-auto">
       <div className="flex items-center justify-between mt-4 mb-4">
-        <h3 className="text-2xl font-bold p-2">Product Request Dashboard</h3>
-        <h4 className="text-md font-semibold mr-5 text-end">Total Request: {products.length}</h4>
+        <h3 className="text-2xl font-bold p-8">Product Request Dashboard</h3>
+        <h4 className="text-md font-semibold mr-5 text-end">Total Product Request: {products.length}</h4>
       </div>
 
       {/* Search Inputs */}
@@ -72,7 +72,7 @@ const ProductRequestDashboard = () => {
 
 
       {/* Display table */}
-      <div className="text-gray-600 justify-between flex items-center">
+      <div className="text-gray-600 ml-3 z-1 justify-between flex items-center">
         <table className="w-screen table-auto text-center">
           <thead>
             <tr className="text-center bg-slate-900 border border-white text-white">

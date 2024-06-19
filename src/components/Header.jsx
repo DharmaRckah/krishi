@@ -8,8 +8,30 @@ import { LuGitCompare } from "react-icons/lu";
 import Cart from './Cart';
 import { FiAlignLeft } from "react-icons/fi";
 import Blogs from './Blogs';
+import { useSelector } from 'react-redux';
+import LogoutButton from './LogoutButton';
+import ProductSearch from './ProductSearch';
+import SearchedProduct from './SearchedProduct';
+
 
 const Header = () => {
+  // ..............................................search bar................................................
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   const [dropdownOpen, setDropdownOpen] = useState({
     fertilizers: false,
     pesticides: false,
@@ -18,8 +40,10 @@ const Header = () => {
   });
 
   const [isOpen, setIsOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
   const [accountDropdownOpen, setAccountDropdownOpen] = useState(false); // State for account dropdown
+
+  const authToken = useSelector((state) => state.auth.token);
+
 
   const toggleDropdown = (menu) => {
     setDropdownOpen((prev) => ({
@@ -30,10 +54,6 @@ const Header = () => {
     }));
   };
 
-  const handleSearchSubmit = (e) => {
-    e.preventDefault();
-    console.log('Search Query:', searchQuery);
-  };
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
@@ -64,18 +84,9 @@ const Header = () => {
       <div className='container flex flex-wrap items-center justify-between'>
         <div className='flex items-center gap-4 ml-10'>
           <img className='w-32 md:pl-0 md:h-full md:w-30' src={log} alt="Logo" />
-          <form onSubmit={handleSearchSubmit} className='flex items-center gap-2'>
-            <input
-              type="text"
-              className='border hidden md:block rounded-sm px-4 py-2 md:w-40 lg:w-96'
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-            <button type="submit" className='hidden md:block bg-green-600 text-white px-4 py-2 rounded-sm hover:bg-green-700 transition'>
-              <FaSearch />
-            </button>
-          </form>
+
+          <ProductSearch/>
+          <SearchedProduct/>
           <input
             type="text"
             className='border hidden md:block rounded-sm px-4 py-2 w-40'
@@ -84,11 +95,11 @@ const Header = () => {
         </div>
         <div className='md:ml-2 items-center lg:flex  hidden md:gap-6 text-lg'>
           <NavLink
-            to='/wishlist'
+            to='/productlist'
             className='flex items-center gap-2 hover:text-green-600 transition'
             activeClassName='text-green-600'
           >
-            Compare <LuGitCompare />
+            Products <LuGitCompare />
           </NavLink>
           <NavLink
             to='/wishlist'
@@ -106,27 +117,46 @@ const Header = () => {
           </NavLink>
           <div className='relative'>
             <button
-              onClick={toggleAccountDropdown}
+              onMouseEnter={toggleAccountDropdown}
               className='flex items-center gap-2 hover:text-green-600 transition'
             >
               Account <VscAccount />
             </button>
             {accountDropdownOpen && (
               <div onClick={() => setAccountDropdownOpen(false)} className='absolute z-10 top-full mt-2 bg-white shadow-lg'>
-                <NavLink
-                  to='/profile'
-                  className='block px-4 py-2 hover:text-green-600 transition'
-                  activeClassName='text-green-600'
-                >
-                  Profile
-                </NavLink>
-                <NavLink
-                  to=''
-                  className='block px-4 py-2 hover:text-green-600 transition'
-                  activeClassName='text-green-600'
-                >
-                  Orders
-                </NavLink>
+                {authToken ? (
+                  <>
+                    <NavLink
+                      to='/profile'
+                      className='block px-4 py-2 hover:text-green-600 transition'
+                      activeClassName='text-green-600'
+                    >
+                      Profile
+                    </NavLink>
+                    <NavLink
+                      to='/userorders'
+                      className='block px-4 py-2 hover:text-green-600 transition'
+                      activeClassName='text-green-600'
+                    >
+                      Orders
+                    </NavLink>
+                    <NavLink
+                      to='/signin'
+                      className='block px-4 py-2 hover:text-green-600 transition'
+                      activeClassName='text-green-600'
+                    >
+                      <LogoutButton />
+                    </NavLink>
+                  </>
+                ) : (
+                  <NavLink
+                    to='/signin'
+                    className='block px-4 py-2 hover:text-green-600 transition'
+                    activeClassName='text-green-600'
+                  >
+                    Login
+                  </NavLink>
+                )}
               </div>
             )}
           </div>
@@ -142,7 +172,7 @@ const Header = () => {
         <div className='container mx-auto flex justify-between'>
           <NavLink
             exact
-            to='/home'
+            to='/'
             className='hover:text-green-600 transition'
             activeClassName='text-green-600'
           >
@@ -449,7 +479,7 @@ const Header = () => {
           <li className='mb-4'><NavLink to='/wishlist'>Wishlist</NavLink></li>
           <li className='mb-4'><NavLink to='/'>Login</NavLink></li>
         </ul>
-        <div  className='container bg-gray-100 bg-transparent-sm md:hidden z-50 transition-all duration-1000 ease-in-out  flex flex-col py-4 px-4 gap-8 text-base text-gray-800 absolute w-72 top-64 left-0 right-0'>
+        <div className='container bg-gray-100 bg-transparent-sm md:hidden z-50 transition-all duration-1000 ease-in-out  flex flex-col py-4 px-4 gap-8 text-base text-gray-800 absolute w-72 top-64 left-0 right-0'>
           <NavLink
             onClick={() => setIsOpen(false)}
             exact

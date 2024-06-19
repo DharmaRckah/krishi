@@ -1,23 +1,40 @@
 import React, { useEffect, useState } from 'react';
-import axios from 'axios';
+import { useSelector } from 'react-redux';
 
 const Profile = () => {
     const [userData, setUserData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const userId = useSelector((state) => state.auth.userId);
+    const authToken = useSelector((state) => state.auth.token);
 
     useEffect(() => {
-        // Fake API call using JSONPlaceholder
-        axios.get('https://jsonplaceholder.typicode.com/users/1')
-            .then(response => {
-                setUserData(response.data);
-                setLoading(false);
-            })
-            .catch(error => {
-                setError('Something went wrong!');
-                setLoading(false);
+        if (userId && authToken) {
+            fetchProfile();
+        }
+    }, [userId, authToken]);
+
+    const fetchProfile = async () => {
+        try {
+            const response = await fetch(`http://bhartiyabiotech.ap-south-1.elasticbeanstalk.com/user/${userId}`, {
+                headers: {
+                    Authorization: `Bearer ${authToken}`,
+                },
             });
-    }, []);
+            if (response.ok) {
+                const data = await response.json();
+                console.log('user profile data:', data);
+                setUserData(data);
+                setLoading(false);
+            } else {
+                setError('Failed to fetch user profile data');
+                setLoading(false);
+            }
+        } catch (error) {
+            setError('Error fetching user profile data');
+            setLoading(false);
+        }
+    };
 
     if (loading) {
         return <div>Loading...</div>;
@@ -28,32 +45,33 @@ const Profile = () => {
     }
 
     return (
-        <div className="container mx-auto my-10 p-5 bg-white shadow-lg rounded-lg">
-            <div className="flex items-center space-x-4">
-                <img
-                    src={`https://robohash.org/${userData.id}.png?size=150x150`}
-                    alt="Profile"
-                    className="w-32 h-32 rounded-full"
-                />
-                <div>
-                    <h1 className="text-2xl font-bold">{userData.name}</h1>
-                    <p className="text-gray-600">{userData.email}</p>
-                    <p className="text-gray-600">{userData.phone}</p>
-                    <p className="text-gray-600">{userData.gender}</p>
+        <div className="flex items-center justify-center ">
+            <div className="container mx-auto my-10 p-5 bg-lime-200 shadow-lg rounded-lg w-[70%]">
+                <div className="flex flex-col md:flex-row items-center md:space-x-6">
+                    <img
+                        src={`https://robohash.org/${userData.id}.png?size=150x150`}
+                        alt="Profile"
+                        className="w-32 h-32 rounded-full mb-4 md:mb-0"
+                    />
+                    <div>
+                        <h1 className="text-3xl font-bold text-gray-900">{userData.name}</h1>
+                        <p className="text-gray-600">{userData.email}</p>
+                        <p className="text-gray-600">{userData.mobile_number}</p>
+                        <p className="text-gray-600 capitalize">{userData.gender}</p>
+                    </div>
+                </div>
+                <div className="mt-8">
+                    <h2 className="text-2xl font-semibold text-gray-900">Address</h2>
+                    <div className="mt-4 text-gray-600 space-y-1">
+                        <p>{userData.address.colony}, {userData.address.suite}</p>
+                        <p>{userData.address.city}, {userData.address.zipcode}</p>
+                        <p>{userData.address.pincode}, {userData.address.zipcode}</p>
+                        <p>{userData.address.state}, {userData.address.zipcode}</p>
+                    </div>
                 </div>
             </div>
-            <div className="mt-5">
-                <h2 className="text-xl font-semibold">Address</h2>
-                <p className="text-gray-600">{userData.address.street}, {userData.address.suite}</p>
-                <p className="text-gray-600">{userData.address.city}, {userData.address.zipcode}</p>
-            </div>
-            <div className="mt-5">
-                <h2 className="text-xl font-semibold">Company</h2>
-                <p className="text-gray-600">{userData.company.name}</p>
-                <p className="text-gray-600">{userData.company.catchPhrase}</p>
-                <p className="text-gray-600">{userData.company.bs}</p>
-            </div>
         </div>
+
     );
 };
 

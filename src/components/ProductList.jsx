@@ -12,31 +12,16 @@ const ProductList = () => {
   const [priceRange, setPriceRange] = useState([0, 1000]);
   const [category, setCategory] = useState("");
   const [categories, setCategories] = useState([]);
-  const [token, setToken] = useState("");
-
-  useEffect(() => {
-    const dt = localStorage.getItem("DKAUTH");
-    if (dt) {
-      const parsedDt = JSON.parse(dt);
-      setToken(parsedDt.token);
-    } else {
-      console.log("No data found in localStorage for 'DKAUTH'");
-    }
-  }, []);
 
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const response = await axios.get(
-          "http://bhartiyabiotech.ap-south-1.elasticbeanstalk.com/products",
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
+          "http://bhartiyabiotech.ap-south-1.elasticbeanstalk.com/products"
         );
 
         dispatch(setProducts(response.data));
+        console.log(response.data);
 
         // Extract unique categories from the products
         const uniqueCategories = [
@@ -51,10 +36,8 @@ const ProductList = () => {
       }
     };
 
-    if (token) {
-      fetchProducts();
-    }
-  }, [dispatch, token]);
+    fetchProducts();
+  }, [dispatch]);
 
   const handlePriceChange = (e) => {
     const { value, name } = e.target;
@@ -133,10 +116,7 @@ const ProductList = () => {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {console.log(filteredProducts, "filteredProducts")}
-            
             {filteredProducts.map((product) => (
-              
               <Link
                 to={`/product/${product.productId}`}
                 key={product.productId}
@@ -160,9 +140,8 @@ const ProductList = () => {
                     <h3 className="text-lg font-semibold text-gray-600">
                       {product.category}
                     </h3>
-
                     <h4 className="text-xl text-gray-600 font-bold mt-2">
-                      ${product.varients[0].price}
+                      Rs. {product.varients[0].price}
                     </h4>
                   </div>
                 </div>

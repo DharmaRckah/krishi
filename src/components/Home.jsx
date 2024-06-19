@@ -7,6 +7,7 @@ import Client from './Client';
 import Visiter from './Visiter';
 import FeaturedCategories from './FeaturedCategories';
 import ImageGallery from './ImageGallery';
+import LogoutButton from './LogoutButton';
 
 
 

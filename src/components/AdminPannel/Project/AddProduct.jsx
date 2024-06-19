@@ -21,15 +21,15 @@ const AddProduct = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const dt = localStorage.getItem('DKAUTH');
-
-    if (dt) {
-      const parsedDt = JSON.parse(dt);
-      setToken(parsedDt.token);
+    const token = localStorage.getItem('authToken');
+    if (token) {
+      setToken(token);
     } else {
-      console.log("No data found in localStorage for 'DKAUTH'");
+      console.log("No data found in localStorage for 'authToken'");
     }
   }, []);
+
+
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -61,13 +61,10 @@ const AddProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    // Validation check to ensure at least one variant is present
     if (formData.varients.length === 0) {
       toast.error('Please add at least one variant.');
       return;
     }
-
     try {
       const formDataToSend = new FormData();
       const productData = {
@@ -77,10 +74,8 @@ const AddProduct = () => {
         description: formData.description,
         varients: formData.varients
       };
-
       formDataToSend.append('product', JSON.stringify(productData));
       formDataToSend.append('image', imageFile);
-   
       const response = await axios.post(
         'http://bhartiyabiotech.ap-south-1.elasticbeanstalk.com/product',
         formDataToSend,
@@ -91,8 +86,7 @@ const AddProduct = () => {
           }
         }
       );
-
-      alert('Product added successfully!');
+      toast.success('Product added successfully!');
       navigate('/ProductDashboard');
     } catch (error) {
       console.error(error);
